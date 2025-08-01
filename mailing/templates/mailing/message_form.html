@@ -1,16 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Создание рассылки</title>
-</head>
-<body>
-    <h1>Cоздание нового сообщения</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Создать</button>
-    </form>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}
+    {% if object %}
+        Изменение сообщения
+    {% else %}
+        Создание сообщения
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% if object %}
+            Изменение сообщения
+        {% else %}
+            Создание сообщения
+        {% endif %}
+    </h1>
+    <div class="p-4 border rounded shadow-sm">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.topic_message.id_for_label }}" class="form-label">
+                    {{ form.topic_message.label }}
+                </label>
+                <input type="text" name="{{ form.topic_message.name }}" id="{{ form.topic_message.id_for_label }}"
+                       class="form-control" value="{{ form.topic_message.value|default_if_none:'' }}"
+                       {% if form.topic_message.field.required %}required{% endif %}>
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.text_message.id_for_label }}" class="form-label">
+                    {{ form.text_message.label }}
+                </label>
+                <textarea name="{{ form.text_message.name }}" id="{{ form.text_message.id_for_label }}"
+                          class="form-control" {% if form.text_message.field.required %}required{% endif %}>{{ form.text_message.value|default_if_none:'' }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}

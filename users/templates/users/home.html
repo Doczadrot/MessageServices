@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Главная страница
+{% endblock %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-5 text-center">
+        <h1 class="display-5 fw-bold">Добро пожаловать в сервис рассылок!</h1>
+        <p class="fs-4">
+            Здесь вы можете создавать и управлять рассылками,
+            сообщениями и клиентами.
+        </p>
+        <hr class="my-4">
+        <div class="d-grid gap-2 d-md-flex justify-content-center">
+            <a class="btn btn-primary btn-lg" href="{% url 'mailing:message_list' %}" role="button">
+                Сообщения
+            </a>
+            <a class="btn btn-secondary btn-lg" href="{% url 'mailing:client_list' %}" role="button">
+                Клиенты
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
