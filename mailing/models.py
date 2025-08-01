@@ -1,14 +1,18 @@
 from django.utils import timezone
 from django.db import models
 
-class LinkService(models.Model):
+class Client(models.Model):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=300, help_text='Введите Фамилию, имя, отчество', verbose_name='ФИО')
-    comment = models.TextField(help_text='Комментарии',null=True, blank=True)
+    comment = models.TextField(help_text='Комментарии',null=True, blank=True, verbose_name="Комментарии")
 
 #Обязательные для заполнения
     def __str__(self):
         return f'{self.full_name} ({self.email})'
+
+    class Meta:
+        verbose_name = 'Клиент'
+        verbose_name_plural = 'Клиенты'
 
 class Message(models.Model):
     topic_message = models.CharField(max_length=300, help_text='Введите тему письма', verbose_name='Тема письма')
@@ -38,7 +42,7 @@ class Malling(models.Model):
     periodicity = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, verbose_name='Периодичность') #периодичность
     status = models.CharField(max_length=20, choices=STATUS_CHOICES,  verbose_name='Статус')
     message = models.ForeignKey(Message, on_delete=models.CASCADE, verbose_name='Cообщение')
-    abonent = models.ManyToManyField("LinkService", verbose_name='Получатели')
+    abonent = models.ManyToManyField("Client", verbose_name='Получатели')
 
     def __str__(self):
         return self.title
@@ -57,7 +61,4 @@ class Mailjurnal(models.Model):
     def __str__(self):
         # Статус и время попытки
         return f"{self.get_status_display()} в {self.time_malling.strftime('%Y-%m-%d %H:%M:%S')}"
-
-
-
 

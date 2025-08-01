@@ -11,12 +11,16 @@ from users.models import Users
 # Create your views here.
 class UserRegisterView(CreateView):
     model = Users
-    template_name = 'user/register.html'
-    success_url = reverse_lazy('users:login')
+    template_name = 'users/register.html'
+    success_url = '/'
     form_class = UsersRegisterForm
+
+def home(request):
+    return render(request, template_name='users/home.html')
+
 
 class UserLoginView(LoginView):
     model = Users
-    template_name = 'user/login.html'
+    template_name = 'users/login.html'
     success_url = reverse_lazy('users:home')
     form_class = AuthenticationForm

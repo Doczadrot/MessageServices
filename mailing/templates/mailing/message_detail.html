@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ message.topic_message }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="my-4">{{ message.topic_message }}</h1>
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text">{{ message.text_message }}</p>
+                <a href="{% url 'mailing:update_message' message.pk %}" class="btn btn-warning">Изменить</a>
+                <a href="{% url 'mailing:delete_message' message.pk %}" class="btn btn-danger">Удалить</a>
+                <a href="{% url 'mailing:message_list' %}" class="btn btn-secondary">К списку сообщений</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

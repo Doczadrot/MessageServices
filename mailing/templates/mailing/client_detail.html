@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ client.full_name }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="my-4">Детали клиента</h1>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ client.full_name }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ client.email }}</h6>
+                <p class="card-text">{{ client.comment }}</p>
+                <a href="{% url 'mailing:update_client' client.pk %}" class="btn btn-warning">Изменить</a>
+                <a href="{% url 'mailing:delete_client' client.pk %}" class="btn btn-danger">Удалить</a>
+                <a href="{% url 'mailing:client_list' %}" class="btn btn-secondary">К списку клиентов</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
