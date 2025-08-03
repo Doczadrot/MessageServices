@@ -19,11 +19,10 @@ from django.urls import path, include
 from django.contrib import admin
 from django.urls import path
 
-from users.views import home
-
+from users.views import HomeView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('mailing/', include('mailing.urls')),
-    path('', home, name='home')
+    path('', HomeView.as_view(), name='home'),
 ]

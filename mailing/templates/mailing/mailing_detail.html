@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Детали рассылки: {{ mailing.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h1 class="my-4 text-center">Детали рассылки: {{ mailing.title }}</h1>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Название: {{ mailing.title }}</h5>
+                    <p class="card-text"><strong>Периодичность:</strong> {{ mailing.get_periodicity_display }}</p>
+                    <p class="card-text"><strong>Статус:</strong> {{ mailing.get_status_display }}</p>
+                    <p class="card-text"><strong>Время начала:</strong> {{ mailing.start_time }}</p>
+                    <p class="card-text"><strong>Время окончания:</strong> {{ mailing.end_time }}</p>
+                    <p class="card-text"><strong>Сообщение:</strong> {{ mailing.message.topic_message }}</p>
+                    <p class="card-text"><strong>Отправитель:</strong> {{ mailing.message.user.email }}</p>
+                    
+                    <h6 class="mt-4">Получатели:</h6>
+                    <ul>
+                        {% for abonent in mailing.abonent.all %}
+                            <li>{{ abonent.full_name }} ({{ abonent.email }})</li>
+                        {% empty %}
+                            <li>Получатели не выбраны.</li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <div>
+                        {% if mailing.status == 'created' or mailing.status == 'paused' %}
+                            <a href="{% url 'mailing:activate_mailing' mailing.pk %}" class="btn btn-success me-2">Запустить</a>
+                        {% endif %}
+
+                        {% if mailing.status == 'running' %}
+                            <a href="{% url 'mailing:pause_mailing' mailing.pk %}" class="btn btn-warning me-2 text-white">Приостановить</a>
+                            <a href="{% url 'mailing:deactivate_mailing' mailing.pk %}" class="btn btn-danger me-2">Завершить</a>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <a href="{% url 'mailing:update_mailing' mailing.pk %}" class="btn btn-warning">
+                            Изменить
+                        </a>
+                        <a href="{% url 'mailing:mailing_list' %}" class="btn btn-secondary">
+                            К списку рассылок
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
