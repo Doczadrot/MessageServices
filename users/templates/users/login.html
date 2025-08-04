@@ -1,12 +1,24 @@
 {% extends 'base.html' %}
-{% block title %}
-Вход
-{% endblock %}
+{% load static %}
+
+{% block title %}Вход{% endblock %}
+
 {% block content %}
-    <h1>Вход в аккаунт</h1>
-    <form method="post" class="p-3 border rounded shadow-sm">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Войти</button>
-    </form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <h2 class="card-title text-center mb-4">Вход</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg mt-3">Войти</button>
+                    </div>
+                </form>
+                <p class="text-center mt-3">Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
