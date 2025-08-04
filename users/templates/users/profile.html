@@ -1,6 +1,41 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Профиль пользователя{% endblock %}
 
 {% block content %}
-<h1>Профиль пользователя</h1>
-<!-- Содержимое профиля -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4">
+                <h2 class="card-title text-center mb-4">Профиль</h2>
+                <div class="card-body">
+                    <p class="lead">Добро пожаловать   {{ user.email }}!</p>
+                    <p class="text-muted">Это ваш личный кабинет. Здесь вы можете управлять своими данными.</p>
+                    <hr>
+                    <h5 class="mb-3">Информация о пользователе:</h5>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Дата регистрации:</strong> {{ user.date_joined }}</p>
+                    {% if not user.email_verify %}
+                        <div class="alert alert-warning" role="alert">
+                            Ваш email не подтвержден. Пожалуйста, проверьте почту.
+                        </div>
+                    {% else %}
+                         <div class="alert alert-success" role="alert">
+                            Ваш email успешно подтвержден.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <form action="{% url 'users:logout' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-lg">Выйти</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
 {% endblock %}

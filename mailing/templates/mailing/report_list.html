@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Статистика рассылок{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="my-4 text-center">Статистика рассылок</h1>
+    <div class="p-4 border rounded shadow-sm">
+        {% if reports %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Название рассылки</th>
+                        <th scope="col">Время отчета</th>
+                        <th scope="col">Успешные попытки</th>
+                        <th scope="col">Неуспешные попытки</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr>
+                        <td>{{ report.mailing.title }}</td>
+                        <td>{{ report.sent_at }}</td>
+                        <td>{{ report.successful_attempts }}</td>
+                        <td>{{ report.unsuccessful_attempts }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center" role="alert">
+            Пока нет данных для отчетов.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

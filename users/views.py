@@ -1,12 +1,17 @@
+import smtplib
+import uuid
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
-from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView, LogoutView
+from django.core.mail import send_mail
+from django.conf import settings
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy, reverse
+from django.views import View
 from django.views.generic import CreateView, TemplateView
 
-# Импортируем модели из нашего приложения mailing, чтобы использовать их для статистики
 from mailing.models import Mailing, Client
 
 from users.form import UsersRegisterForm
@@ -39,11 +44,44 @@ class HomeView(TemplateView):
 class UserRegisterView(CreateView):
     model = Users
     template_name = 'users/register.html'
-    success_url = '/'
+    success_url = reverse_lazy('users:login')
     form_class = UsersRegisterForm
+
+    def form_valid(self, form):
+        user = form.save(commit=False) # не сохраняем в БД
+        user.email_verify = False
+        user.token = str(uuid.uuid4()) #создаем уникальный токен для ссылки
+        user.save()
+        verify_link = self.request.build_absolute_uri(reverse('users:verify_email', args=[user.token]))
+        try:
+            send_mail(
+                'Подтверждение почты',
+                f'Для подтверждения почты, перейдите по ссылке: {verify_link}',
+                settings.EMAIL_HOST_USER,
+                [user.email],
+                fail_silently=False,
+            )
+        except smtplib.SMTPException:
+            pass
+        return super().form_valid(form)
 
 class UserLoginView(LoginView):
     model = Users
     template_name = 'users/login.html'
     success_url = reverse_lazy('users:home')
     form_class = AuthenticationForm
+
+class VerifyEmailView(View):
+    """Представление для подтверждения почты"""
+    def get(self, request, token):
+        user = Users.objects.filter(token=token).first()
+        if user:
+            user.email_verify = True
+            user.token = None
+            user.save()
+            # Добавляем сообщение если успешно
+        return redirect(reverse('users:login'))
+
+class UserLogoutView(LogoutView):
+    """Представление для выхода пользователя"""
+    next_page = reverse_lazy('users:home')

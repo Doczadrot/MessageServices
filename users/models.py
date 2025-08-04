@@ -32,6 +32,9 @@ class Users(AbstractUser):
     country = models.CharField(unique=False, verbose_name='Страна', help_text='Введите страну')
     image = models.ImageField(upload_to='users/avatar', verbose_name='AVATAR', blank=True, null=True)
     phone_number = PhoneNumberField(blank=True, null=True, unique=True, help_text="Введите номер телефона в международном формате")
+    #Поля для подтверждения почты
+    email_verify = models.BooleanField(default=True, verbose_name='Проверка почты')
+    token = models.CharField(max_length=100, blank=True, null=True, verbose_name='Токен')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

@@ -7,7 +7,7 @@ from django.views.generic import CreateView, ListView, UpdateView, DetailView, D
 
 # Импортируем все формы и модели, с которыми мы работаем
 from mailing.forms import MessageForm, ClientForm, MailingForm
-from mailing.models import Message, Client, Mailing, Mailjurnal
+from mailing.models import Message, Client, Mailing, Mailjurnal, MailingReport
 from mailing.services import send_mailing
 
 
@@ -202,12 +202,18 @@ class MailingPauseView(LoginRequiredMixin, View):
         return redirect('mailing:mailing_list')
 
 class MailingDeactivateView(LoginRequiredMixin, View):
-    """
-    Представление для деактивации рассылки (установка статуса 'completed').
-    """
+
     def get(self, request, pk):
         mailing = get_object_or_404(Mailing, pk=pk, message__user=self.request.user)
         mailing.status = 'completed'
         mailing.save()
         messages.success(request, f'Рассылка "{mailing.title}" успешно завершена.')
         return redirect('mailing:mailing_list')
+
+class MailingReportListView(LoginRequiredMixin, ListView):
+    model = MailingReport
+    template_name = 'mailing/report_list.html'
+    context_object_name = 'reports'
+
+    def get_queryset(self):
+        return MailingReport.objects.filter(user=self.request.user)
