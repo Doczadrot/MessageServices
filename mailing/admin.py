@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Message, Mailing, Mailjurnal, MailingReport
+from .models import Client, Message, Mailing, MailingReport, Mailjurnal
 
 admin.site.register(Client)
 admin.site.register(Message)

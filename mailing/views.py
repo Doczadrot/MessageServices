@@ -22,6 +22,7 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
         """Метод для автоматического присвоения владельца сообщению."""
         # Текущий пользователь (self.request.user) становится владельцем сообщения.
         form.instance.user = self.request.user
+        form.instance.owner = self.request.user
         return super().form_valid(form)
 
 class MessageListView(LoginRequiredMixin, ListView):
@@ -64,6 +65,7 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
         """Метод для автоматического присвоения владельца клиенту."""
         # Текущий пользователь становится владельцем клиента.
         form.instance.user = self.request.user
+        form.instance.owner = self.request.user
         return super().form_valid(form)
 
 class ClientListView(LoginRequiredMixin, ListView):
@@ -105,6 +107,12 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+    def form_valid(self, form):
+        """Метод для автоматического присвоения владельца рассылке."""
+        form.instance.user = self.request.user
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
 class MailingListView(LoginRequiredMixin, ListView):
     """Представление для отображения списка рассылок."""
@@ -153,21 +161,21 @@ class MailingSendView(LoginRequiredMixin, View):
         return redirect('mailing:mailing_list')
 
 
-# class HomeView(TemplateView):
-#     """Отображает статистику на главной странице"""
-#     template_name = 'home.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['total_mailings'] = Mailing.objects.all().count()
-#         context['active_mailings'] = Mailing.objects.filter(status='running').count()
-#
-#         if self.request.user.is_authenticated:
-#             context['unique_recipients'] = Client.objects.filter(user=self.request.user).distinct('email').count()
-#         else:
-#             context['unique_recipients'] = 0
-#
-#         return context
+class HomeView(TemplateView):
+    """Отображает статистику на главной странице"""
+    template_name = 'home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_mailings'] = Mailing.objects.all().count()
+        context['active_mailings'] = Mailing.objects.filter(status='running').count()
+
+        if self.request.user.is_authenticated:
+            context['unique_recipients'] = Client.objects.filter(user=self.request.user).distinct('email').count()
+        else:
+            context['unique_recipients'] = 0
+
+        return context
 
 class MailjurnalListView(LoginRequiredMixin, ListView):
     """Представление для отображения журнала рассылок."""

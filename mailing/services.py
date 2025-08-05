@@ -2,7 +2,7 @@ import pytz
 from datetime import datetime
 from django.core.mail import send_mail
 from django.conf import settings
-from mailing.models import Mailjurnal, Mailing
+from mailing.models import Mailjurnal, Mailing, MailingReport  # Импортируем MailingReport
 
 
 def send_mailing(mailing_object):
@@ -12,6 +12,9 @@ def send_mailing(mailing_object):
     """
     timezone = pytz.timezone(settings.TIME_ZONE)
     now = timezone.localize(datetime.now())
+
+    successful_attempts = 0
+    unsuccessful_attempts = 0
 
     for abonent in mailing_object.abonent.all():
         try:
@@ -28,8 +31,10 @@ def send_mailing(mailing_object):
                 status='успешно',
                 malling=mailing_object,
                 client=abonent,
-                server_response=f'Письмо успешно отправлено клиенту {abonent.email}'
+                server_response=f'Письмо успешно отправлено клиенту {abonent.email}',
+                user=mailing_object.owner
             )
+            successful_attempts += 1
         except Exception as e:
             # Создаем запись в журнале об ошибке
             Mailjurnal.objects.create(
@@ -37,7 +42,19 @@ def send_mailing(mailing_object):
                 status='не_успешно',
                 malling=mailing_object,
                 client=abonent,
-                server_response=f'Ошибка при отправке: {e}'
+                server_response=f'Ошибка при отправке: {e}',
+                user=mailing_object.owner
             )
+            unsuccessful_attempts += 1
+
+    # После отправки всех писем, создаем или обновляем отчет
+    MailingReport.objects.update_or_create(
+        mailing=mailing_object,
+        user=mailing_object.owner,
+        defaults={
+            'successful_attempts': successful_attempts,
+            'unsuccessful_attempts': unsuccessful_attempts,
+        }
+    )
 
     return

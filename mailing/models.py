@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.db import models
 
+from django.conf import settings
 from users.models import Users
 
 
@@ -9,7 +10,8 @@ class Client(models.Model):
     full_name = models.CharField(max_length=300, help_text='Введите Фамилию, имя, отчество', verbose_name='ФИО')
     comment = models.TextField(help_text='Комментарии',null=True, blank=True, verbose_name="Комментарии")
     user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='clients')
-#Обязательные для заполнения
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец")
+
     def __str__(self):
         return f'{self.full_name} ({self.email})'
 
@@ -22,6 +24,8 @@ class Message(models.Model):
     topic_message = models.CharField(max_length=300, help_text='Введите тему письма', verbose_name='Тема письма')
     text_message = models.TextField(help_text='Введите текст письма', verbose_name="Текс пиcьма")
     user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='messages')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец")
+
     def __str__(self):
         return f'{self.topic_message}'
     class Meta:
@@ -51,6 +55,7 @@ class Mailing(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE, verbose_name='Cообщение')
     abonent = models.ManyToManyField("Client", verbose_name='Получатели')
     user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='mailings')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец")
 
     class Meta:
         verbose_name = 'Рассылка'
