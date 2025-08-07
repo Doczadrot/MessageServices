@@ -75,6 +75,7 @@ class Command(BaseCommand):
                     }
                 )
                 self.stdout.write(self.style.SUCCESS(
-                    f'Отчет для рассылки "{mailing.title}" обновлен/создан. Успешно: {successful_count}, Неуспешно: {unsuccessful_count}'))
+                    f'Отчет для рассылки "{mailing.title}" обновлен/создан. '
+                    f'Успешно: {successful_count}, Неуспешно: {unsuccessful_count}'))
 
         self.stdout.write(self.style.SUCCESS('Проверка рассылок завершена.'))

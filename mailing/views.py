@@ -3,13 +3,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView, TemplateView
-
+from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView
 
 from mailing.forms import MessageForm, ClientForm, MailingForm
 from mailing.models import Message, Client, Mailing, Mailjurnal, MailingReport
 from mailing.services import send_mailing
-
 
 
 class MessageCreateView(LoginRequiredMixin, CreateView):
@@ -25,6 +23,7 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
+
 class MessageListView(LoginRequiredMixin, ListView):
     """Представление для отображения списка сообщений."""
     model = Message
@@ -36,6 +35,7 @@ class MessageListView(LoginRequiredMixin, ListView):
         # Показываем только те сообщения, которые создал текущий пользователь.
         return Message.objects.filter(user=self.request.user)
 
+
 class MessageUpdateView(LoginRequiredMixin, UpdateView):
     """Представление для редактирования сообщения."""
     model = Message
@@ -46,8 +46,8 @@ class MessageUpdateView(LoginRequiredMixin, UpdateView):
         """Менеджеры могут редактировать любое сообщение, обычные пользователи - только свои."""
         if self.request.user.is_staff:
             return Message.objects.all()
-
         return Message.objects.filter(owner=self.request.user)
+
 
 class MessageDetailView(LoginRequiredMixin, DetailView):
     """Представление для отображения деталей сообщения."""
@@ -61,6 +61,7 @@ class MessageDetailView(LoginRequiredMixin, DetailView):
         # Фильтруем по полю 'owner'
         return Message.objects.filter(owner=self.request.user)
 
+
 class MessageDeleteView(LoginRequiredMixin, DeleteView):
     """Представление для удаления сообщения."""
     model = Message
@@ -73,7 +74,6 @@ class MessageDeleteView(LoginRequiredMixin, DeleteView):
             return Message.objects.all()
         # Фильтруем по полю 'owner'
         return Message.objects.filter(owner=self.request.user)
-
 
 
 class ClientCreateView(LoginRequiredMixin, CreateView):
@@ -90,6 +90,7 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class ClientListView(LoginRequiredMixin, ListView):
     """Представление для отображения списка клиентов."""
     model = Client
@@ -102,6 +103,7 @@ class ClientListView(LoginRequiredMixin, ListView):
             return Client.objects.all()
         # Фильтруем по полю 'owner'
         return Client.objects.filter(owner=self.request.user)
+
 
 class ClientUpdateView(LoginRequiredMixin, UpdateView):
     """Представление для редактирования клиента."""
@@ -116,6 +118,7 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
         # Фильтруем по полю 'owner'
         return Client.objects.filter(owner=self.request.user)
 
+
 class ClientDeleteView(LoginRequiredMixin, DeleteView):
     """Представление для удаления клиента."""
     model = Client
@@ -129,6 +132,7 @@ class ClientDeleteView(LoginRequiredMixin, DeleteView):
         # Фильтруем по полю 'owner'
         return Client.objects.filter(owner=self.request.user)
 
+
 class ClientDetailView(LoginRequiredMixin, DetailView):
     """Представление для отображения деталей клиента."""
     model = Client
@@ -140,6 +144,7 @@ class ClientDetailView(LoginRequiredMixin, DetailView):
             return Client.objects.all()
         # Фильтруем по полю 'owner'
         return Client.objects.filter(owner=self.request.user)
+
 
 # ----- Представления для рассылок -----
 class MailingCreateView(LoginRequiredMixin, CreateView):
@@ -161,6 +166,7 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         # Если поле 'user' также должно быть заполнено текущим пользователем:
         form.instance.user = self.request.user
         return super().form_valid(form)
+
 
 class MailingListView(LoginRequiredMixin, ListView):
     """Представление для отображения списка рассылок."""
@@ -196,6 +202,7 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
         # Фильтруем по полю 'owner'
         return Mailing.objects.filter(owner=self.request.user)
 
+
 class MailingDetailView(LoginRequiredMixin, DetailView):
     """Представление для отображения деталей рассылки."""
     model = Mailing
@@ -207,6 +214,7 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
             return Mailing.objects.all()
         # Фильтруем по полю 'owner'
         return Mailing.objects.filter(owner=self.request.user)
+
 
 class MailingDeleteView(LoginRequiredMixin, DeleteView):
     """Представление для удаления рассылки."""
@@ -221,6 +229,7 @@ class MailingDeleteView(LoginRequiredMixin, DeleteView):
         # Фильтруем по полю 'owner'
         return Mailing.objects.filter(owner=self.request.user)
 
+
 class MailingSendView(LoginRequiredMixin, View):
     """Представление для ручной отправки рассылки."""
     def post(self, request, pk):
@@ -233,6 +242,7 @@ class MailingSendView(LoginRequiredMixin, View):
         send_mailing(mailing)
         messages.success(request, f'Рассылка "{mailing.title}" успешно запущена.')
         return redirect('mailing:mailing_list')
+
 
 # Представление для журнала рассылок
 class MailjurnalListView(LoginRequiredMixin, ListView):
@@ -248,6 +258,7 @@ class MailjurnalListView(LoginRequiredMixin, ListView):
             return Mailjurnal.objects.all()
         # Используем поле 'user' для Mailjurnal, так как у него нет 'owner'
         return Mailjurnal.objects.filter(user=self.request.user)
+
 
 # Представления для активации/приостановки/завершения рассылок
 class MailingActivateView(LoginRequiredMixin, View):
@@ -266,6 +277,7 @@ class MailingActivateView(LoginRequiredMixin, View):
         messages.success(request, f'Рассылка "{mailing.title}" успешно активирована.')
         return redirect('mailing:mailing_list')
 
+
 class MailingPauseView(LoginRequiredMixin, View):
     """
     Преставление для приостновки рассылки (установка статуса 'paused').
@@ -275,25 +287,24 @@ class MailingPauseView(LoginRequiredMixin, View):
         if self.request.user.is_staff:
             mailing = get_object_or_404(Mailing, pk=pk)
         else:
-
             mailing = get_object_or_404(Mailing, pk=pk, owner=self.request.user)
         mailing.status = 'paused'
         mailing.save()
         messages.success(request, f'Рассылка "{mailing.title}" успешно приостановлена.')
         return redirect('mailing:mailing_list')
 
-class MailingDeactivateView(LoginRequiredMixin, View):
 
+class MailingDeactivateView(LoginRequiredMixin, View):
     def get(self, request, pk):
         if self.request.user.is_staff:
             mailing = get_object_or_404(Mailing, pk=pk)
         else:
-
             mailing = get_object_or_404(Mailing, pk=pk, owner=self.request.user)
         mailing.status = 'completed'
         mailing.save()
         messages.success(request, f'Рассылка "{mailing.title}" успешно завершена.')
         return redirect('mailing:mailing_list')
+
 
 class MailingReportListView(LoginRequiredMixin, ListView):
     model = MailingReport
@@ -304,5 +315,4 @@ class MailingReportListView(LoginRequiredMixin, ListView):
         """Фильтрация отчетов по текущему пользователю. Менеджеры видят все отчеты."""
         if self.request.user.is_staff:
             return MailingReport.objects.all()
-
         return MailingReport.objects.filter(user=self.request.user)
