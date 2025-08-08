@@ -2,7 +2,7 @@ import pytz
 from datetime import datetime
 from django.core.mail import send_mail
 from django.conf import settings
-from mailing.models import Mailjurnal, Mailing, MailingReport  # Импортируем MailingReport
+from mailing.models import Mailjurnal, MailingReport  # Импортируем MailingReport
 
 
 def send_mailing(mailing_object):

@@ -1,6 +1,5 @@
 from django import forms
 from django.forms import ModelMultipleChoiceField, CheckboxSelectMultiple, ModelForm, widgets
-
 from mailing.models import Message, Client, Mailing
 
 
@@ -9,10 +8,12 @@ class MessageForm(ModelForm):
         model = Message
         fields = ['topic_message', 'text_message']
 
+
 class ClientForm(ModelForm):
     class Meta:
         model = Client
         fields = ['email', 'full_name', 'comment']
+
 
 class MailingForm(ModelForm):
     """Форма для создания и редактирования рассылки."""
@@ -42,5 +43,3 @@ class MailingForm(ModelForm):
         self.fields['title'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Введите Названия рассылки'})
         self.fields['periodicity'].widget.attrs.update({'class': 'form-select'})
         self.fields['status'].widget.attrs.update({'class': 'form-select'})
-
-
