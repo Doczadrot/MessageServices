@@ -1,6 +1,5 @@
 SpamServices
-
-Описание проекта: 
+Описание проекта
 SpamServices — это веб-приложение на Django, разработанное для создания и управления массовыми рассылками. Оно предоставляет функционал для управления клиентами, сообщениями и самими рассылками, а также включает ролевую систему для обычных пользователей и менеджеров. Проект обеспечивает ведение журнала рассылок и отчетности, а также функции безопасности, такие как подтверждение email и сброс пароля.
 
 Основные возможности
@@ -78,7 +77,7 @@ pip install -r requirements.txt
 
 DB_NAME=project3
 DB_USER=postgres
-DB_PASSWORD=202939
+DB_PASSWORD=YOUR_DB_PASSWORD # ЗАМЕНИТЕ НА ВАШ ПАРОЛЬ ОТ БАЗЫ ДАННЫХ
 DB_HOST=localhost
 DB_PORT=5432
 
@@ -87,15 +86,15 @@ EMAIL_HOST=smtp.yandex.com
 EMAIL_PORT=465
 EMAIL_USE_SSL=True
 EMAIL_HOST_USER=your_email@yandex.com
-EMAIL_HOST_PASSWORD=your_email_app_password
+EMAIL_HOST_PASSWORD=YOUR_EMAIL_APP_PASSWORD # ЗАМЕНИТЕ НА ВАШ ПАРОЛЬ ПРИЛОЖЕНИЯ
 
-Важно: your_email_app_password — это пароль приложения, который вы должны сгенерировать в настройках безопасности вашей почты (не основной пароль от аккаунта).
+Важно: YOUR_EMAIL_APP_PASSWORD — это пароль приложения, который вы должны сгенерировать в настройках безопасности вашей почты (не основной пароль от аккаунта).
 
 Настройте базу данных:
 Убедитесь, что у вас установлен и запущен PostgreSQL, и что пользователь postgres может подключаться к базе данных project3 с указанным паролем. Если пользователь postgres не существует или его пароль отличается, создайте его в PostgreSQL:
 
 sudo -u postgres psql
-CREATE ROLE postgres WITH LOGIN PASSWORD '202939';
+CREATE ROLE postgres WITH LOGIN PASSWORD 'YOUR_DB_PASSWORD'; # ЗАМЕНИТЕ НА ВАШ ПАРОЛЬ
 ALTER ROLE postgres CREATEDB;
 \q
 
